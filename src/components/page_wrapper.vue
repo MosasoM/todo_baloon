@@ -59,12 +59,13 @@ export default {
         alert("time is null\nname,date,time is to be filled");
       } else {
         let dd = e.date;
+        console.log(dd)
         let y1 = Number(dd.substr(0, 4));
-        let m1 = Number(dd.substr(5, 2));
-        let d1 = Number(dd.substr(8, 2));
+        let m1 = Number(dd.substr(5, 7));
+        let d1 = Number(dd.substr(8, 10));
         let tt = e.time;
         let h1 = Number(tt.substr(0, 2));
-        let minu1 = Number(tt.substr(3, 2));
+        let minu1 = Number(tt.substr(3, 5));
         let due = {
             y: y1,
             m: m1,
@@ -86,6 +87,8 @@ export default {
         }
         this.head += 1
         this.tasks.push(obj)
+        let temp = JSON.stringify(this.tasks)
+        localStorage.setItem("tasks",temp)
       }
     },
 
