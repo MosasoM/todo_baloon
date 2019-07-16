@@ -2,34 +2,114 @@
   <div id="highest-wrapper">
     <div id="todo-node-wrap">
       <li class="nodes" v-for="task in sortedtasks" v-bind:key="task.id">
-        <div class = "nodebase" v-bind:class="task.cond" v-if="task.name">{{task.name}}</div>
+        <div
+          class="nodebase"
+          v-bind:class="task.cond"
+          v-if="task.name"
+          v-on:click="see_detail(task)"
+        >{{task.name}}</div>
       </li>
+    </div>
+
+    <div class="modalback" v-if="detailv">
+      <div class="modalcontainer">
+        <div class="modalbody">
+          <div id="nameshow">
+            <div class="showcontent">
+              <p class="showheader">name</p>
+              {{name}}
+            </div>
+          </div>
+          <div id="impshow">
+            <div class="showcontent">
+              <p class="showheader">importance</p>
+              {{importance}}
+            </div>
+          </div>
+          <div id="dueshow">
+            <div class="showcontent">
+              <p class="showheader">due date</p>
+              {{duedate}}
+              <br />
+              {{duetime}}
+            </div>
+          </div>
+          <div id="detshow">
+            <div class="showcontent">
+              <p class="showheader">detail</p>
+              {{detail}}
+            </div>
+          </div>
+          <div id="tcbutton">
+            <button
+              type="button"
+              class="normalbutton"
+              id="done"
+              v-on:click="$emit('donetask',taskid);close();reset();"
+            >Done</button>
+            <button type="button" class="normalbutton" id="addtask" v-on:click="close();reset();">Ok</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import Vue from "vue"
+import Vue from "vue";
 export default {
   name: "todonodes",
   props: ["intasks"],
-  data:function(){
-      return{
-          tasks : this.intasks,
-      }
+  data: function() {
+    return {
+      tasks: this.intasks,
+      detailv: false,
+      name: "",
+      importance: "",
+      duedate: "",
+      duetime: "",
+      detail: "",
+      taskid: ""
+    };
   },
-computed:{
-    sortedtasks:function(){
-        return this.tasks.sort(function(a,b){
-              if(a.priority>b.priority){
-                  return -1
-              }else{
-                  return 1
-              }
-          }
-        )
+  methods: {
+    see_detail: function(task) {
+      this.detailv = true;
+      this.name = task.name;
+      if (task.importance === 0) {
+        this.importance = "低";
+      } else if (task.importance == 1) {
+        this.importance = "中";
+      } else {
+        this.importance = "高";
+      }
+      this.duedate = task.year + "年" + task.month + "月" + task.day + "日";
+      this.duetime = task.hour + "時" + task.minutes + "分";
+      this.detail = task.detail;
+    },
+    close: function() {
+      this.detailv = false;
+    },
+    reset: function() {
+      this.name = "";
+      this.importance = "";
+      this.duedate = "";
+      this.duetime = "";
+      this.detail = "";
+      this.taskid = "";
     }
-}
+  },
+  computed: {
+    sortedtasks: function() {
+      return this.tasks.sort(function(a, b) {
+        if (a.priority > b.priority) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+    }
+  }
 };
 </script>>
 
@@ -46,7 +126,6 @@ computed:{
   background-color: rgb(180, 180, 180);
   width: 400px;
   height: 150px;
-
 }
 .small {
   background-color: rgb(0, 207, 0);
@@ -81,5 +160,42 @@ computed:{
 }
 .flip-move {
   transition: transform 1s;
+}
+#done {
+  background-color: hotpink;
+}
+
+#nameshow {
+  height: 80px;
+  border: solid 3px #6091d3;
+}
+
+#impshow {
+  height: 80px;
+  border: solid 3px #6091d3;
+  margin-top: 20px;
+}
+
+#dueshow {
+  height: 100px;
+  border: solid 3px #6091d3;
+  margin-top: 20px;
+}
+
+#detshow {
+  height: 120px;
+  border: solid 3px #6091d3;
+  margin-top: 20px;
+}
+.showheader {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: black;
+}
+
+.showcontent {
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 </style>

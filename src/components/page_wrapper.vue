@@ -1,7 +1,7 @@
 <template>
   <div id="pagewrapper">
-    <todonodes v-bind:intasks="tasks" ref="nodechild"> </todonodes>
-    <addtask v-on:closemodal="closemodal" v-bind:isshow="taskmodal"></addtask>
+    <todonodes v-bind:intasks="tasks" ref="nodechild" v-on:donetask="removetask"></todonodes>
+    <addtask v-on:closemodal="closemodalf" v-bind:isshow="taskmodal"></addtask>
     <img
       src="../assets/plus.png"
       id="addicon"
@@ -17,13 +17,12 @@ import todonodes from "./Todo_node.vue";
 import addtask from "./Add_task.vue";
 export default {
   name: "pwrap",
-  props: ["rawtasks", "inhead"],
+  props: ["rawtasks"],
   components: { todonodes, addtask },
   data: function() {
     return {
       taskmodal: false,
-      tasks: this.rawtasks,
-      head: this.inhead
+      tasks: this.rawtasks
     };
   },
   methods: {
@@ -46,56 +45,54 @@ export default {
           return "large_red";
       }
     },
-    closemodal: function(e) {
+    closemodalf: function(e) {
       this.taskmodal = !this.taskmodal;
-      if (e.length === 0){
-          return 0
-      }
-      else if (e.name === "") {
+      if (!e.name) {
+        return 0;
+      } else if (e.name === "") {
         alert("name is null\nname,date,time is to be filled");
       } else if (e.date === "") {
         alert("date is null\nname,date,time is to be filled");
       } else if (e.time === "") {
         alert("time is null\nname,date,time is to be filled");
       } else {
-        let dd = e.date;
-        console.log(dd)
-        let y1 = Number(dd.substr(0, 4));
-        let m1 = Number(dd.substr(5, 7));
-        let d1 = Number(dd.substr(8, 10));
-        let tt = e.time;
-        let h1 = Number(tt.substr(0, 2));
-        let minu1 = Number(tt.substr(3, 5));
-        let due = {
-            y: y1,
-            m: m1,
-            d: d1,
-            h: h1,
-            min: minu1
-          }
-        let p = this.calc_prio(due,e.importance,7,3)
-        let c = this.alloc_classname(p)
+        let dd = e.date.split("-");
+        let y1 = Number(dd[0]);
+        let m1 = Number(dd[1]);
+        let d1 = Number(dd[2]);
+        let tt = e.time.split(":");
+        let h1 = Number(tt[0]);
+        let minu1 = Number(tt[1]);
+        let mill = new Date(y1, m1 - 1, d1, h1, minu1).getTime();
+        let p = this.calc_prio(y1, m1, d1, h1, minu1, e.importance, 7, 3);
+        let c = this.alloc_classname(p);
+        let temp_taskid = mill.toString() + e.name;
         let obj = {
-            name:e.name,
-            importance:e.importance,
-            duedate:due,
-            priority:p,
-            cond:c,
-            bod1:7,
-            bod2:3,
-            hash:0
-        }
-        this.head += 1
-        this.tasks.push(obj)
-        let temp = JSON.stringify(this.tasks)
-        localStorage.setItem("tasks",temp)
+          name: e.name,
+          importance: e.importance,
+          year: y1,
+          month: m1,
+          day: d1,
+          hour: h1,
+          minutes: minu1,
+          milisec: mill,
+          priority: p,
+          cond: c,
+          bod1: 7,
+          bod2: 3,
+          taskid: temp_taskid
+        };
+        this.head += 1;
+        this.tasks.push(obj);
+        let temp = JSON.stringify(this.tasks);
+        localStorage.setItem("tasks", temp);
       }
     },
 
-    calc_prio: function(dd, imp, bod1, bod2) {
+    calc_prio: function(y, m, d, h, mi, imp, bod1, bod2) {
       let daymill = 8.64e7;
-      let nowms = new Date();
-      let ms = Date(dd.y, dd.m, dd.d, dd.h, dd.min);
+      let nowms = new Date().getTime();
+      let ms = new Date(y, m - 1, d, h, mi).getTime();
       let state = 100;
       if (ms - nowms < 0) {
         state = 100;
@@ -107,6 +104,17 @@ export default {
         state = imp;
       }
       return Number(state);
+    },
+    removetask: function(e) {
+      let target = 0;
+      for (let i = 0; i < this.tasks.length; ++i) {
+        if (this.tasks[i].taskid === e) {
+          target = i;
+        }
+      }
+      this.tasks.splice(target, 1);
+      let temp = JSON.stringify(this.tasks);
+      localStorage.setItem("tasks", temp);
     }
   }
 };
