@@ -110,6 +110,7 @@ export default {
       for (let i = 0; i < this.tasks.length; ++i) {
         if (this.tasks[i].taskid === e) {
           target = i;
+          break
         }
       }
       this.tasks.splice(target, 1);

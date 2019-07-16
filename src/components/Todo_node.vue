@@ -86,6 +86,7 @@ export default {
       this.duedate = task.year + "年" + task.month + "月" + task.day + "日";
       this.duetime = task.hour + "時" + task.minutes + "分";
       this.detail = task.detail;
+      this.taskid = task.taskid;
     },
     close: function() {
       this.detailv = false;
