@@ -47,7 +47,7 @@
               id="done"
               v-on:click="$emit('donetask',taskid);close();reset();"
             >Done</button>
-            <button type="button" class="normalbutton" id="addtask" v-on:click="close();reset();">Ok</button>
+            <button type="button" class="normalbutton" id="addtask" v-on:click="close();reset();">OK</button>
           </div>
         </div>
       </div>

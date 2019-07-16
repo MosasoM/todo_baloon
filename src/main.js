@@ -36,6 +36,8 @@ if (!testdata) {
   testdata = parse_local_data(testdata);
 }
 
+
+
 new Vue({
   render: function(createElement) {
     return createElement(wrapper, {

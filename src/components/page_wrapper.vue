@@ -97,11 +97,11 @@ export default {
       if (ms - nowms < 0) {
         state = 100;
       } else if (ms - nowms < daymill * bod2) {
-        state = imp + 2;
+        state = Number(imp) + 2;
       } else if (ms - nowms < daymill * bod1) {
-        state = imp + 1;
+        state = Number(imp) + 1;
       } else {
-        state = imp;
+        state = Number(imp);
       }
       return Number(state);
     },
