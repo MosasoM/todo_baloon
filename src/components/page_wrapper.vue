@@ -128,4 +128,9 @@ export default {
   right: 0;
   z-index: 2;
 }
+
+#pagewrapper{
+    display: flex;
+    justify-content: center;
+}
 </style>
