@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 export default {
   name: "todonodes",
   props: ["intasks"],
@@ -102,7 +101,7 @@ export default {
   },
   computed: {
     sortedtasks: function() {
-      return this.tasks.sort(function(a, b) {
+      return this.tasks.slice().sort(function(a, b) {
         if (a.priority > b.priority) {
           return -1;
         } else if(a.priority === b.priority){
